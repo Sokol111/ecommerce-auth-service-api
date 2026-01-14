@@ -1,292 +1,18 @@
 openapi: 3.0.0
 info:
   title: Auth API
-  version: 1.0.0
+  version: 1.0.1
   description: |
     Authentication and Authorization API for E-commerce platform.
-    Supports both public customers and admin panel users with RBAC.
+    Supports admin panel users with RBAC.
     Uses PASETO tokens for secure authentication.
 
-servers:
-  - url: /api
-    description: API base path
-
-tags:
-  - name: Customer Auth
-    description: Authentication endpoints for public e-commerce customers
-  - name: Admin Auth
-    description: Authentication endpoints for admin panel users
-  - name: Token
-    description: Token management (refresh, revoke, introspect)
-  - name: Customer Management
-    description: Customer account management
-  - name: Admin User Management
-    description: Admin user and role management (requires super_admin)
-  - name: Service Auth
-    description: Service-to-service authentication
-
 paths:
-  # ===========================================================================
-  # Customer Authentication (Public E-commerce)
-  # ===========================================================================
-  /v1/customer/register:
-    post:
-      tags: [Customer Auth]
-      summary: Register a new customer
-      operationId: customerRegister
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/CustomerRegisterRequest"
-      responses:
-        "201":
-          description: Customer registered successfully
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/AuthResponse"
-        "400":
-          description: Validation error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "409":
-          description: Email already registered
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-
-  /v1/customer/login:
-    post:
-      tags: [Customer Auth]
-      summary: Customer login
-      operationId: customerLogin
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/LoginRequest"
-      responses:
-        "200":
-          description: Login successful
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/AuthResponse"
-        "400":
-          description: Validation error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "401":
-          description: Invalid credentials
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-
-  /v1/customer/logout:
-    post:
-      tags: [Customer Auth]
-      summary: Customer logout (revoke current session)
-      operationId: customerLogout
-      security:
-        - BearerAuth: []
-      responses:
-        "204":
-          description: Logged out successfully
-        "401":
-          description: Unauthorized
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-
-  /v1/customer/me:
-    get:
-      tags: [Customer Management]
-      summary: Get current customer profile
-      operationId: customerGetProfile
-      security:
-        - BearerAuth: []
-      responses:
-        "200":
-          description: Customer profile
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CustomerProfile"
-        "401":
-          description: Unauthorized
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-
-  /v1/customer/me/update:
-    put:
-      tags: [Customer Management]
-      summary: Update current customer profile
-      operationId: customerUpdateProfile
-      security:
-        - BearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/CustomerUpdateRequest"
-      responses:
-        "200":
-          description: Profile updated
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CustomerProfile"
-        "400":
-          description: Validation error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "401":
-          description: Unauthorized
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-
-  /v1/customer/password/change:
-    post:
-      tags: [Customer Management]
-      summary: Change customer password
-      operationId: customerChangePassword
-      security:
-        - BearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/ChangePasswordRequest"
-      responses:
-        "204":
-          description: Password changed successfully
-        "400":
-          description: Validation error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "401":
-          description: Unauthorized or wrong current password
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-
-  /v1/customer/password/reset-request:
-    post:
-      tags: [Customer Auth]
-      summary: Request password reset (sends email)
-      operationId: customerPasswordResetRequest
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/PasswordResetRequest"
-      responses:
-        "204":
-          description: Reset email sent (if email exists)
-        "400":
-          description: Validation error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-
-  /v1/customer/password/reset-confirm:
-    post:
-      tags: [Customer Auth]
-      summary: Confirm password reset with token
-      operationId: customerPasswordResetConfirm
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/PasswordResetConfirmRequest"
-      responses:
-        "204":
-          description: Password reset successfully
-        "400":
-          description: Invalid or expired token
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-
   # ===========================================================================
   # Admin Authentication
   # ===========================================================================
   /v1/admin/login:
     post:
-      tags: [Admin Auth]
       summary: Admin user login
       operationId: adminLogin
       requestBody:
@@ -327,32 +53,8 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
 
-  /v1/admin/logout:
-    post:
-      tags: [Admin Auth]
-      summary: Admin logout (revoke current session)
-      operationId: adminLogout
-      security:
-        - BearerAuth: []
-      responses:
-        "204":
-          description: Logged out successfully
-        "401":
-          description: Unauthorized
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-
   /v1/admin/me:
     get:
-      tags: [Admin User Management]
       summary: Get current admin user profile
       operationId: adminGetProfile
       security:
@@ -379,7 +81,6 @@ paths:
 
   /v1/admin/password/change:
     post:
-      tags: [Admin User Management]
       summary: Change admin user password
       operationId: adminChangePassword
       security:
@@ -417,7 +118,6 @@ paths:
   # ===========================================================================
   /v1/admin/users/create:
     post:
-      tags: [Admin User Management]
       summary: Create a new admin user
       operationId: adminUserCreate
       security:
@@ -468,7 +168,6 @@ paths:
 
   /v1/admin/users/update:
     put:
-      tags: [Admin User Management]
       summary: Update an admin user
       operationId: adminUserUpdate
       security:
@@ -519,7 +218,6 @@ paths:
 
   /v1/admin/users/get/{id}:
     get:
-      tags: [Admin User Management]
       summary: Get admin user by ID
       operationId: adminUserGetById
       security:
@@ -565,7 +263,6 @@ paths:
 
   /v1/admin/users/list:
     get:
-      tags: [Admin User Management]
       summary: List admin users with pagination
       operationId: adminUserList
       security:
@@ -637,7 +334,6 @@ paths:
 
   /v1/admin/users/disable/{id}:
     post:
-      tags: [Admin User Management]
       summary: Disable an admin user
       operationId: adminUserDisable
       security:
@@ -679,7 +375,6 @@ paths:
 
   /v1/admin/users/enable/{id}:
     post:
-      tags: [Admin User Management]
       summary: Enable an admin user
       operationId: adminUserEnable
       security:
@@ -724,7 +419,6 @@ paths:
   # ===========================================================================
   /v1/token/refresh:
     post:
-      tags: [Token]
       summary: Refresh access token using refresh token
       operationId: tokenRefresh
       requestBody:
@@ -759,133 +453,11 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
 
-  /v1/token/revoke:
-    post:
-      tags: [Token]
-      summary: Revoke a refresh token
-      operationId: tokenRevoke
-      security:
-        - BearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/TokenRevokeRequest"
-      responses:
-        "204":
-          description: Token revoked
-        "400":
-          description: Invalid request
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "401":
-          description: Unauthorized
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-
-  /v1/token/introspect:
-    post:
-      tags: [Token]
-      summary: Introspect a token (validate and get claims)
-      description: |
-        Used by other services to validate tokens and get user information.
-        Can be called with service credentials or a valid access token.
-      operationId: tokenIntrospect
-      security:
-        - BearerAuth: []
-        - ServiceAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/TokenIntrospectRequest"
-      responses:
-        "200":
-          description: Token introspection result
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/TokenIntrospectResponse"
-        "400":
-          description: Invalid request
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "401":
-          description: Unauthorized
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-
-  # ===========================================================================
-  # Service-to-Service Authentication
-  # ===========================================================================
-  /v1/service/token:
-    post:
-      tags: [Service Auth]
-      summary: Get service access token
-      description: |
-        Internal endpoint for services to obtain access tokens for 
-        inter-service communication. Uses service credentials.
-      operationId: serviceGetToken
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/ServiceTokenRequest"
-      responses:
-        "200":
-          description: Service token issued
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ServiceTokenResponse"
-        "400":
-          description: Invalid request
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "401":
-          description: Invalid service credentials
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-
   # ===========================================================================
   # Roles & Permissions (informational)
   # ===========================================================================
   /v1/roles:
     get:
-      tags: [Admin User Management]
       summary: Get all available roles
       operationId: getRoles
       security:
@@ -912,7 +484,6 @@ paths:
 
   /v1/permissions:
     get:
-      tags: [Admin User Management]
       summary: Get all available permissions
       operationId: getPermissions
       security:
@@ -946,11 +517,6 @@ components:
       type: http
       scheme: bearer
       description: PASETO token in Authorization header
-    ServiceAuth:
-      type: apiKey
-      in: header
-      name: X-Service-Token
-      description: Service-to-service authentication token
 
   schemas:
     # =========================================================================
@@ -960,20 +526,12 @@ components:
       type: string
       enum:
         - super_admin
-        - user_manager
-        - product_manager
-        - category_manager
-        - order_manager
-        - content_manager
+        - catalog_manager
         - viewer
       description: |
         Admin user roles:
         - super_admin: Full access to all resources
-        - user_manager: Can manage admin users
-        - product_manager: Can manage products and attributes
-        - category_manager: Can manage categories
-        - order_manager: Can manage orders
-        - content_manager: Can manage content (images, etc.)
+        - catalog_manager: Can manage products, categories and attributes
         - viewer: Read-only access
 
     Permission:
@@ -991,69 +549,14 @@ components:
         - categories:read
         - categories:write
         - categories:delete
-        # Orders
-        - orders:read
-        - orders:write
-        - orders:update_status
-        # Images
-        - images:read
-        - images:write
-        - images:delete
         # Attributes
         - attributes:read
         - attributes:write
         - attributes:delete
-        # Customers
-        - customers:read
-        - customers:write
-        - customers:disable
-
-    TokenType:
-      type: string
-      enum:
-        - customer
-        - admin
-        - service
-      description: Type of the token subject
 
     # =========================================================================
-    # Customer Auth Schemas
+    # Auth Schemas
     # =========================================================================
-    CustomerRegisterRequest:
-      type: object
-      required:
-        - email
-        - password
-        - firstName
-        - lastName
-      properties:
-        email:
-          type: string
-          format: email
-          example: "customer@example.com"
-          maxLength: 255
-        password:
-          type: string
-          format: password
-          minLength: 8
-          maxLength: 72
-          example: "SecureP@ss123"
-          description: Must contain at least 8 characters
-        firstName:
-          type: string
-          minLength: 1
-          maxLength: 100
-          example: "John"
-        lastName:
-          type: string
-          minLength: 1
-          maxLength: 100
-          example: "Doe"
-        phone:
-          type: string
-          maxLength: 20
-          example: "+380501234567"
-
     LoginRequest:
       type: object
       required:
@@ -1063,35 +566,13 @@ components:
         email:
           type: string
           format: email
-          example: "user@example.com"
+          example: "admin@example.com"
           maxLength: 255
         password:
           type: string
           format: password
           example: "SecureP@ss123"
           maxLength: 72
-
-    AuthResponse:
-      type: object
-      required:
-        - accessToken
-        - refreshToken
-        - expiresIn
-        - tokenType
-      properties:
-        accessToken:
-          type: string
-          description: PASETO access token
-        refreshToken:
-          type: string
-          description: Refresh token for obtaining new access tokens
-        expiresIn:
-          type: integer
-          description: Access token expiration time in seconds
-          example: 900
-        tokenType:
-          type: string
-          example: "Bearer"
 
     AdminAuthResponse:
       type: object
@@ -1118,57 +599,6 @@ components:
         user:
           $ref: "#/components/schemas/AdminUserProfile"
 
-    CustomerProfile:
-      type: object
-      required:
-        - id
-        - email
-        - firstName
-        - lastName
-        - createdAt
-      properties:
-        id:
-          type: string
-          format: uuid
-          example: "123e4567-e89b-12d3-a456-426614174000"
-        email:
-          type: string
-          format: email
-          example: "customer@example.com"
-        firstName:
-          type: string
-          example: "John"
-        lastName:
-          type: string
-          example: "Doe"
-        phone:
-          type: string
-          example: "+380501234567"
-        emailVerified:
-          type: boolean
-          example: true
-        createdAt:
-          type: string
-          format: date-time
-
-    CustomerUpdateRequest:
-      type: object
-      properties:
-        firstName:
-          type: string
-          minLength: 1
-          maxLength: 100
-          example: "John"
-        lastName:
-          type: string
-          minLength: 1
-          maxLength: 100
-          example: "Doe"
-        phone:
-          type: string
-          maxLength: 20
-          example: "+380501234567"
-
     ChangePasswordRequest:
       type: object
       required:
@@ -1185,31 +615,6 @@ components:
           minLength: 8
           maxLength: 72
           description: Must contain at least 8 characters
-
-    PasswordResetRequest:
-      type: object
-      required:
-        - email
-      properties:
-        email:
-          type: string
-          format: email
-          maxLength: 255
-
-    PasswordResetConfirmRequest:
-      type: object
-      required:
-        - token
-        - newPassword
-      properties:
-        token:
-          type: string
-          description: Password reset token from email
-        newPassword:
-          type: string
-          format: password
-          minLength: 8
-          maxLength: 72
 
     # =========================================================================
     # Admin User Schemas
@@ -1384,84 +789,6 @@ components:
         expiresIn:
           type: integer
           example: 900
-
-    TokenRevokeRequest:
-      type: object
-      required:
-        - refreshToken
-      properties:
-        refreshToken:
-          type: string
-
-    TokenIntrospectRequest:
-      type: object
-      required:
-        - token
-      properties:
-        token:
-          type: string
-          description: The token to introspect
-
-    TokenIntrospectResponse:
-      type: object
-      required:
-        - active
-      properties:
-        active:
-          type: boolean
-          description: Whether the token is active/valid
-        tokenType:
-          $ref: "#/components/schemas/TokenType"
-        subject:
-          type: string
-          description: User or service ID
-        email:
-          type: string
-          format: email
-        role:
-          $ref: "#/components/schemas/AdminRole"
-        permissions:
-          type: array
-          items:
-            $ref: "#/components/schemas/Permission"
-        expiresAt:
-          type: string
-          format: date-time
-        issuedAt:
-          type: string
-          format: date-time
-
-    # =========================================================================
-    # Service Auth Schemas
-    # =========================================================================
-    ServiceTokenRequest:
-      type: object
-      required:
-        - serviceId
-        - serviceSecret
-      properties:
-        serviceId:
-          type: string
-          example: "product-service"
-          description: Unique service identifier
-        serviceSecret:
-          type: string
-          format: password
-          description: Service secret key
-
-    ServiceTokenResponse:
-      type: object
-      required:
-        - accessToken
-        - expiresIn
-      properties:
-        accessToken:
-          type: string
-          description: Service access token
-        expiresIn:
-          type: integer
-          description: Token expiration in seconds
-          example: 3600
 
     # =========================================================================
     # Roles & Permissions Schemas
