@@ -482,32 +482,6 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
 
-  /v1/permissions:
-    get:
-      summary: Get all available permissions
-      operationId: getPermissions
-      security:
-        - BearerAuth: []
-      responses:
-        "200":
-          description: List of permissions
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/PermissionsResponse"
-        "401":
-          description: Unauthorized
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-
 # =============================================================================
 # Components
 # =============================================================================
@@ -520,39 +494,17 @@ components:
 
   schemas:
     # =========================================================================
-    # Enums
+    # Types
     # =========================================================================
     AdminRole:
       type: string
-      enum:
-        - super_admin
-        - catalog_manager
-        - viewer
-      description: |
-        Admin user roles:
-        - super_admin: Full access to all resources
-        - catalog_manager: Can manage products, categories and attributes
-        - viewer: Read-only access
+      description: Admin user role (configured via application settings)
+      example: "super_admin"
 
     Permission:
       type: string
-      enum:
-        # User management
-        - users:read
-        - users:write
-        - users:delete
-        # Products
-        - products:read
-        - products:write
-        - products:delete
-        # Categories
-        - categories:read
-        - categories:write
-        - categories:delete
-        # Attributes
-        - attributes:read
-        - attributes:write
-        - attributes:delete
+      description: System permission in format "resource:action"
+      example: "products:read"
 
     # =========================================================================
     # Auth Schemas
@@ -818,31 +770,6 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/RoleInfo"
-
-    PermissionInfo:
-      type: object
-      required:
-        - name
-        - description
-        - resource
-      properties:
-        name:
-          $ref: "#/components/schemas/Permission"
-        description:
-          type: string
-        resource:
-          type: string
-          example: "products"
-
-    PermissionsResponse:
-      type: object
-      required:
-        - permissions
-      properties:
-        permissions:
-          type: array
-          items:
-            $ref: "#/components/schemas/PermissionInfo"
 
     # =========================================================================
     # Error Schemas
