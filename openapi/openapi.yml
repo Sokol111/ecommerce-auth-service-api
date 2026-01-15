@@ -121,7 +121,7 @@ paths:
       summary: Create a new admin user
       operationId: adminUserCreate
       security:
-        - BearerAuth: []
+        - BearerAuth: [users:write]
       requestBody:
         required: true
         content:
@@ -171,7 +171,7 @@ paths:
       summary: Update an admin user
       operationId: adminUserUpdate
       security:
-        - BearerAuth: []
+        - BearerAuth: [users:write]
       requestBody:
         required: true
         content:
@@ -221,7 +221,7 @@ paths:
       summary: Get admin user by ID
       operationId: adminUserGetById
       security:
-        - BearerAuth: []
+        - BearerAuth: [users:read]
       parameters:
         - name: id
           in: path
@@ -266,7 +266,7 @@ paths:
       summary: List admin users with pagination
       operationId: adminUserList
       security:
-        - BearerAuth: []
+        - BearerAuth: [users:read]
       parameters:
         - name: page
           in: query
@@ -337,7 +337,7 @@ paths:
       summary: Disable an admin user
       operationId: adminUserDisable
       security:
-        - BearerAuth: []
+        - BearerAuth: [users:delete]
       parameters:
         - name: id
           in: path
@@ -378,7 +378,7 @@ paths:
       summary: Enable an admin user
       operationId: adminUserEnable
       security:
-        - BearerAuth: []
+        - BearerAuth: [users:write]
       parameters:
         - name: id
           in: path
