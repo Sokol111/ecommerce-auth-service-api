@@ -532,6 +532,7 @@ components:
         - accessToken
         - refreshToken
         - expiresIn
+        - refreshExpiresIn
         - tokenType
         - user
       properties:
@@ -545,6 +546,10 @@ components:
           type: integer
           description: Access token expiration time in seconds
           example: 900
+        refreshExpiresIn:
+          type: integer
+          description: Refresh token expiration time in seconds
+          example: 604800
         tokenType:
           type: string
           example: "Bearer"
@@ -732,6 +737,7 @@ components:
         - accessToken
         - refreshToken
         - expiresIn
+        - refreshExpiresIn
       properties:
         accessToken:
           type: string
@@ -741,6 +747,10 @@ components:
         expiresIn:
           type: integer
           example: 900
+        refreshExpiresIn:
+          type: integer
+          description: Refresh token expiration time in seconds
+          example: 604800
 
     # =========================================================================
     # Roles & Permissions Schemas
