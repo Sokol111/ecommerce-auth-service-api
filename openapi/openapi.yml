@@ -46,6 +46,12 @@ paths:
             application/problem+json:
               schema:
                 $ref: "#/components/schemas/Problem"
+        "429":
+          description: Too many login attempts
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
         "500":
           description: Internal Server Error
           content:
@@ -68,40 +74,6 @@ paths:
                 $ref: "#/components/schemas/AdminUserProfile"
         "401":
           description: Unauthorized
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-
-  /v1/admin/password/change:
-    post:
-      summary: Change admin user password
-      operationId: adminChangePassword
-      security:
-        - BearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/ChangePasswordRequest"
-      responses:
-        "204":
-          description: Password changed successfully
-        "400":
-          description: Validation error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "401":
-          description: Unauthorized or wrong current password
           content:
             application/problem+json:
               schema:
@@ -155,56 +127,6 @@ paths:
                 $ref: "#/components/schemas/Problem"
         "409":
           description: Email already exists
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "500":
-          description: Internal Server Error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-
-  /v1/admin/users/update:
-    put:
-      summary: Update an admin user
-      operationId: adminUserUpdate
-      security:
-        - BearerAuth: [users:write]
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/AdminUserUpdateRequest"
-      responses:
-        "200":
-          description: Admin user updated
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/AdminUserResponse"
-        "400":
-          description: Validation error
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "401":
-          description: Unauthorized
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "403":
-          description: Forbidden - insufficient permissions
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-        "404":
-          description: User not found
           content:
             application/problem+json:
               schema:
@@ -565,25 +487,6 @@ components:
         user:
           $ref: "#/components/schemas/AdminUserProfile"
 
-    ChangePasswordRequest:
-      type: object
-      required:
-        - currentPassword
-        - newPassword
-      properties:
-        currentPassword:
-          type: string
-          format: password
-          minLength: 1
-          maxLength: 72
-        newPassword:
-          type: string
-          format: password
-          minLength: 8
-          maxLength: 72
-          pattern: "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}$"
-          description: Must contain at least 8 characters, including uppercase, lowercase, and a number
-
     # =========================================================================
     # Admin User Schemas
     # =========================================================================
@@ -647,29 +550,6 @@ components:
           maxLength: 72
           pattern: "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}$"
           description: Must contain at least 8 characters, including uppercase, lowercase, and a number
-        firstName:
-          type: string
-          minLength: 1
-          maxLength: 100
-          pattern: "^[\\p{L}\\s'-]+$"
-          description: Letters, spaces, hyphens and apostrophes only
-        lastName:
-          type: string
-          minLength: 1
-          maxLength: 100
-          pattern: "^[\\p{L}\\s'-]+$"
-          description: Letters, spaces, hyphens and apostrophes only
-        role:
-          $ref: "#/components/schemas/AdminRole"
-
-    AdminUserUpdateRequest:
-      type: object
-      required:
-        - id
-      properties:
-        id:
-          type: string
-          format: uuid
         firstName:
           type: string
           minLength: 1
