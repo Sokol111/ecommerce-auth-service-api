@@ -485,7 +485,9 @@ components:
         - accessToken
         - refreshToken
         - expiresIn
+        - expiresAt
         - refreshExpiresIn
+        - refreshExpiresAt
         - tokenType
         - user
       properties:
@@ -499,10 +501,20 @@ components:
           type: integer
           description: Access token expiration time in seconds
           example: 900
+        expiresAt:
+          type: string
+          format: date-time
+          description: Access token absolute expiration time (ISO 8601 UTC)
+          example: "2026-01-28T12:15:00Z"
         refreshExpiresIn:
           type: integer
           description: Refresh token expiration time in seconds
           example: 604800
+        refreshExpiresAt:
+          type: string
+          format: date-time
+          description: Refresh token absolute expiration time (ISO 8601 UTC)
+          example: "2026-02-04T12:00:00Z"
         tokenType:
           type: string
           example: "Bearer"
@@ -662,7 +674,9 @@ components:
         - accessToken
         - refreshToken
         - expiresIn
+        - expiresAt
         - refreshExpiresIn
+        - refreshExpiresAt
       properties:
         accessToken:
           type: string
@@ -671,11 +685,22 @@ components:
           description: New refresh token (token rotation)
         expiresIn:
           type: integer
+          description: Access token expiration time in seconds
           example: 900
+        expiresAt:
+          type: string
+          format: date-time
+          description: Access token absolute expiration time (ISO 8601 UTC)
+          example: "2026-01-28T12:15:00Z"
         refreshExpiresIn:
           type: integer
           description: Refresh token expiration time in seconds
           example: 604800
+        refreshExpiresAt:
+          type: string
+          format: date-time
+          description: Refresh token absolute expiration time (ISO 8601 UTC)
+          example: "2026-02-04T12:00:00Z"
 
     # =========================================================================
     # Roles & Permissions Schemas
