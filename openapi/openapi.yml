@@ -339,6 +339,28 @@ paths:
   # ===========================================================================
   # Token Management
   # ===========================================================================
+  /v1/admin/logout:
+    post:
+      summary: Logout current user (invalidate refresh token)
+      operationId: adminLogout
+      security:
+        - BearerAuth: []
+      responses:
+        "204":
+          description: Logged out successfully
+        "401":
+          description: Unauthorized
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "500":
+          description: Internal Server Error
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+
   /v1/token/refresh:
     post:
       summary: Refresh access token using refresh token
