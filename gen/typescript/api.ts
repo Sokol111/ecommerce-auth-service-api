@@ -6,7 +6,7 @@
 Supports admin panel users with RBAC.
 Uses PASETO tokens for secure authentication.
 
- * OpenAPI spec version: 1.0.3
+ * OpenAPI spec version: 1.0.4
  */
 import axios from 'axios';
 import type {
