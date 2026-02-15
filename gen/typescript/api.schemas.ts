@@ -6,7 +6,7 @@
 Supports admin panel users with RBAC.
 Uses PASETO tokens for secure authentication.
 
- * OpenAPI spec version: 1.0.5
+ * OpenAPI spec version: 1.0.6
  */
 /**
  * Admin user role (configured via application settings)
