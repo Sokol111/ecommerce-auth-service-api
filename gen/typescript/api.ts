@@ -6,14 +6,8 @@
 Supports admin panel users with RBAC.
 Uses PASETO tokens for secure authentication.
 
- * OpenAPI spec version: 1.0.6
+ * OpenAPI spec version: 1.0.7
  */
-import axios from 'axios';
-import type {
-  AxiosRequestConfig,
-  AxiosResponse
-} from 'axios';
-
 import type {
   AdminAuthResponse,
   AdminUserCreateRequest,
@@ -22,138 +16,635 @@ import type {
   AdminUserProfile,
   AdminUserResponse,
   LoginRequest,
+  Problem,
   RolesResponse,
   TokenRefreshRequest,
   TokenRefreshResponse
 } from './api.schemas';
 
 
-
-
-  export const getAuthAPI = () => {
 /**
  * @summary Admin user login
  */
-const adminLogin = <TData = AxiosResponse<AdminAuthResponse>>(
-    loginRequest: LoginRequest, options?: AxiosRequestConfig
- ): Promise<TData> => {
-    return axios.post(
-      `/v1/admin/login`,
-      loginRequest,options
-    );
+export type adminLoginResponse200 = {
+  data: AdminAuthResponse
+  status: 200
+}
+
+export type adminLoginResponse400 = {
+  data: Problem
+  status: 400
+}
+
+export type adminLoginResponse401 = {
+  data: Problem
+  status: 401
+}
+
+export type adminLoginResponse403 = {
+  data: Problem
+  status: 403
+}
+
+export type adminLoginResponse429 = {
+  data: Problem
+  status: 429
+}
+
+export type adminLoginResponse500 = {
+  data: Problem
+  status: 500
+}
+    
+export type adminLoginResponseSuccess = (adminLoginResponse200) & {
+  headers: Headers;
+};
+export type adminLoginResponseError = (adminLoginResponse400 | adminLoginResponse401 | adminLoginResponse403 | adminLoginResponse429 | adminLoginResponse500) & {
+  headers: Headers;
+};
+
+export type adminLoginResponse = (adminLoginResponseSuccess | adminLoginResponseError)
+
+export const getAdminLoginUrl = () => {
+
+
+  
+
+  return `/v1/admin/login`
+}
+
+export const adminLogin = async (loginRequest: LoginRequest, options?: RequestInit): Promise<adminLoginResponse> => {
+  
+  const res = await fetch(getAdminLoginUrl(),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      loginRequest,)
   }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: adminLoginResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as adminLoginResponse
+}
+
+
 
 /**
  * @summary Get current admin user profile
  */
-const adminGetProfile = <TData = AxiosResponse<AdminUserProfile>>(
-     options?: AxiosRequestConfig
- ): Promise<TData> => {
-    return axios.get(
-      `/v1/admin/me`,options
-    );
+export type adminGetProfileResponse200 = {
+  data: AdminUserProfile
+  status: 200
+}
+
+export type adminGetProfileResponse401 = {
+  data: Problem
+  status: 401
+}
+
+export type adminGetProfileResponse500 = {
+  data: Problem
+  status: 500
+}
+    
+export type adminGetProfileResponseSuccess = (adminGetProfileResponse200) & {
+  headers: Headers;
+};
+export type adminGetProfileResponseError = (adminGetProfileResponse401 | adminGetProfileResponse500) & {
+  headers: Headers;
+};
+
+export type adminGetProfileResponse = (adminGetProfileResponseSuccess | adminGetProfileResponseError)
+
+export const getAdminGetProfileUrl = () => {
+
+
+  
+
+  return `/v1/admin/me`
+}
+
+export const adminGetProfile = async ( options?: RequestInit): Promise<adminGetProfileResponse> => {
+  
+  const res = await fetch(getAdminGetProfileUrl(),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
   }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: adminGetProfileResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as adminGetProfileResponse
+}
+
+
 
 /**
  * @summary Create a new admin user
  */
-const adminUserCreate = <TData = AxiosResponse<AdminUserResponse>>(
-    adminUserCreateRequest: AdminUserCreateRequest, options?: AxiosRequestConfig
- ): Promise<TData> => {
-    return axios.post(
-      `/v1/admin/users/create`,
-      adminUserCreateRequest,options
-    );
+export type adminUserCreateResponse201 = {
+  data: AdminUserResponse
+  status: 201
+}
+
+export type adminUserCreateResponse400 = {
+  data: Problem
+  status: 400
+}
+
+export type adminUserCreateResponse401 = {
+  data: Problem
+  status: 401
+}
+
+export type adminUserCreateResponse403 = {
+  data: Problem
+  status: 403
+}
+
+export type adminUserCreateResponse409 = {
+  data: Problem
+  status: 409
+}
+
+export type adminUserCreateResponse500 = {
+  data: Problem
+  status: 500
+}
+    
+export type adminUserCreateResponseSuccess = (adminUserCreateResponse201) & {
+  headers: Headers;
+};
+export type adminUserCreateResponseError = (adminUserCreateResponse400 | adminUserCreateResponse401 | adminUserCreateResponse403 | adminUserCreateResponse409 | adminUserCreateResponse500) & {
+  headers: Headers;
+};
+
+export type adminUserCreateResponse = (adminUserCreateResponseSuccess | adminUserCreateResponseError)
+
+export const getAdminUserCreateUrl = () => {
+
+
+  
+
+  return `/v1/admin/users/create`
+}
+
+export const adminUserCreate = async (adminUserCreateRequest: AdminUserCreateRequest, options?: RequestInit): Promise<adminUserCreateResponse> => {
+  
+  const res = await fetch(getAdminUserCreateUrl(),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      adminUserCreateRequest,)
   }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: adminUserCreateResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as adminUserCreateResponse
+}
+
+
 
 /**
  * @summary Get admin user by ID
  */
-const adminUserGetById = <TData = AxiosResponse<AdminUserResponse>>(
-    id: string, options?: AxiosRequestConfig
- ): Promise<TData> => {
-    return axios.get(
-      `/v1/admin/users/get/${id}`,options
-    );
+export type adminUserGetByIdResponse200 = {
+  data: AdminUserResponse
+  status: 200
+}
+
+export type adminUserGetByIdResponse401 = {
+  data: Problem
+  status: 401
+}
+
+export type adminUserGetByIdResponse403 = {
+  data: Problem
+  status: 403
+}
+
+export type adminUserGetByIdResponse404 = {
+  data: Problem
+  status: 404
+}
+
+export type adminUserGetByIdResponse500 = {
+  data: Problem
+  status: 500
+}
+    
+export type adminUserGetByIdResponseSuccess = (adminUserGetByIdResponse200) & {
+  headers: Headers;
+};
+export type adminUserGetByIdResponseError = (adminUserGetByIdResponse401 | adminUserGetByIdResponse403 | adminUserGetByIdResponse404 | adminUserGetByIdResponse500) & {
+  headers: Headers;
+};
+
+export type adminUserGetByIdResponse = (adminUserGetByIdResponseSuccess | adminUserGetByIdResponseError)
+
+export const getAdminUserGetByIdUrl = (id: string,) => {
+
+
+  
+
+  return `/v1/admin/users/get/${id}`
+}
+
+export const adminUserGetById = async (id: string, options?: RequestInit): Promise<adminUserGetByIdResponse> => {
+  
+  const res = await fetch(getAdminUserGetByIdUrl(id),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
   }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: adminUserGetByIdResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as adminUserGetByIdResponse
+}
+
+
 
 /**
  * @summary List admin users with pagination
  */
-const adminUserList = <TData = AxiosResponse<AdminUserListResponse>>(
-    params: AdminUserListParams, options?: AxiosRequestConfig
- ): Promise<TData> => {
-    return axios.get(
-      `/v1/admin/users/list`,{
+export type adminUserListResponse200 = {
+  data: AdminUserListResponse
+  status: 200
+}
+
+export type adminUserListResponse400 = {
+  data: Problem
+  status: 400
+}
+
+export type adminUserListResponse401 = {
+  data: Problem
+  status: 401
+}
+
+export type adminUserListResponse403 = {
+  data: Problem
+  status: 403
+}
+
+export type adminUserListResponse500 = {
+  data: Problem
+  status: 500
+}
+    
+export type adminUserListResponseSuccess = (adminUserListResponse200) & {
+  headers: Headers;
+};
+export type adminUserListResponseError = (adminUserListResponse400 | adminUserListResponse401 | adminUserListResponse403 | adminUserListResponse500) & {
+  headers: Headers;
+};
+
+export type adminUserListResponse = (adminUserListResponseSuccess | adminUserListResponseError)
+
+export const getAdminUserListUrl = (params: AdminUserListParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/v1/admin/users/list?${stringifiedParams}` : `/v1/admin/users/list`
+}
+
+export const adminUserList = async (params: AdminUserListParams, options?: RequestInit): Promise<adminUserListResponse> => {
+  
+  const res = await fetch(getAdminUserListUrl(params),
+  {      
     ...options,
-        params: {...params, ...options?.params},}
-    );
+    method: 'GET'
+    
+    
   }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: adminUserListResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as adminUserListResponse
+}
+
+
 
 /**
  * @summary Disable an admin user
  */
-const adminUserDisable = <TData = AxiosResponse<void>>(
-    id: string, options?: AxiosRequestConfig
- ): Promise<TData> => {
-    return axios.post(
-      `/v1/admin/users/disable/${id}`,undefined,options
-    );
+export type adminUserDisableResponse204 = {
+  data: void
+  status: 204
+}
+
+export type adminUserDisableResponse401 = {
+  data: Problem
+  status: 401
+}
+
+export type adminUserDisableResponse403 = {
+  data: Problem
+  status: 403
+}
+
+export type adminUserDisableResponse404 = {
+  data: Problem
+  status: 404
+}
+
+export type adminUserDisableResponse500 = {
+  data: Problem
+  status: 500
+}
+    
+export type adminUserDisableResponseSuccess = (adminUserDisableResponse204) & {
+  headers: Headers;
+};
+export type adminUserDisableResponseError = (adminUserDisableResponse401 | adminUserDisableResponse403 | adminUserDisableResponse404 | adminUserDisableResponse500) & {
+  headers: Headers;
+};
+
+export type adminUserDisableResponse = (adminUserDisableResponseSuccess | adminUserDisableResponseError)
+
+export const getAdminUserDisableUrl = (id: string,) => {
+
+
+  
+
+  return `/v1/admin/users/disable/${id}`
+}
+
+export const adminUserDisable = async (id: string, options?: RequestInit): Promise<adminUserDisableResponse> => {
+  
+  const res = await fetch(getAdminUserDisableUrl(id),
+  {      
+    ...options,
+    method: 'POST'
+    
+    
   }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: adminUserDisableResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as adminUserDisableResponse
+}
+
+
 
 /**
  * @summary Enable an admin user
  */
-const adminUserEnable = <TData = AxiosResponse<void>>(
-    id: string, options?: AxiosRequestConfig
- ): Promise<TData> => {
-    return axios.post(
-      `/v1/admin/users/enable/${id}`,undefined,options
-    );
+export type adminUserEnableResponse204 = {
+  data: void
+  status: 204
+}
+
+export type adminUserEnableResponse401 = {
+  data: Problem
+  status: 401
+}
+
+export type adminUserEnableResponse403 = {
+  data: Problem
+  status: 403
+}
+
+export type adminUserEnableResponse404 = {
+  data: Problem
+  status: 404
+}
+
+export type adminUserEnableResponse500 = {
+  data: Problem
+  status: 500
+}
+    
+export type adminUserEnableResponseSuccess = (adminUserEnableResponse204) & {
+  headers: Headers;
+};
+export type adminUserEnableResponseError = (adminUserEnableResponse401 | adminUserEnableResponse403 | adminUserEnableResponse404 | adminUserEnableResponse500) & {
+  headers: Headers;
+};
+
+export type adminUserEnableResponse = (adminUserEnableResponseSuccess | adminUserEnableResponseError)
+
+export const getAdminUserEnableUrl = (id: string,) => {
+
+
+  
+
+  return `/v1/admin/users/enable/${id}`
+}
+
+export const adminUserEnable = async (id: string, options?: RequestInit): Promise<adminUserEnableResponse> => {
+  
+  const res = await fetch(getAdminUserEnableUrl(id),
+  {      
+    ...options,
+    method: 'POST'
+    
+    
   }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: adminUserEnableResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as adminUserEnableResponse
+}
+
+
 
 /**
  * @summary Logout current user (invalidate refresh token)
  */
-const adminLogout = <TData = AxiosResponse<void>>(
-     options?: AxiosRequestConfig
- ): Promise<TData> => {
-    return axios.post(
-      `/v1/admin/logout`,undefined,options
-    );
+export type adminLogoutResponse204 = {
+  data: void
+  status: 204
+}
+
+export type adminLogoutResponse401 = {
+  data: Problem
+  status: 401
+}
+
+export type adminLogoutResponse500 = {
+  data: Problem
+  status: 500
+}
+    
+export type adminLogoutResponseSuccess = (adminLogoutResponse204) & {
+  headers: Headers;
+};
+export type adminLogoutResponseError = (adminLogoutResponse401 | adminLogoutResponse500) & {
+  headers: Headers;
+};
+
+export type adminLogoutResponse = (adminLogoutResponseSuccess | adminLogoutResponseError)
+
+export const getAdminLogoutUrl = () => {
+
+
+  
+
+  return `/v1/admin/logout`
+}
+
+export const adminLogout = async ( options?: RequestInit): Promise<adminLogoutResponse> => {
+  
+  const res = await fetch(getAdminLogoutUrl(),
+  {      
+    ...options,
+    method: 'POST'
+    
+    
   }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: adminLogoutResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as adminLogoutResponse
+}
+
+
 
 /**
  * @summary Refresh access token using refresh token
  */
-const tokenRefresh = <TData = AxiosResponse<TokenRefreshResponse>>(
-    tokenRefreshRequest: TokenRefreshRequest, options?: AxiosRequestConfig
- ): Promise<TData> => {
-    return axios.post(
-      `/v1/token/refresh`,
-      tokenRefreshRequest,options
-    );
+export type tokenRefreshResponse200 = {
+  data: TokenRefreshResponse
+  status: 200
+}
+
+export type tokenRefreshResponse400 = {
+  data: Problem
+  status: 400
+}
+
+export type tokenRefreshResponse401 = {
+  data: Problem
+  status: 401
+}
+
+export type tokenRefreshResponse500 = {
+  data: Problem
+  status: 500
+}
+    
+export type tokenRefreshResponseSuccess = (tokenRefreshResponse200) & {
+  headers: Headers;
+};
+export type tokenRefreshResponseError = (tokenRefreshResponse400 | tokenRefreshResponse401 | tokenRefreshResponse500) & {
+  headers: Headers;
+};
+
+export type tokenRefreshResponse = (tokenRefreshResponseSuccess | tokenRefreshResponseError)
+
+export const getTokenRefreshUrl = () => {
+
+
+  
+
+  return `/v1/token/refresh`
+}
+
+export const tokenRefresh = async (tokenRefreshRequest: TokenRefreshRequest, options?: RequestInit): Promise<tokenRefreshResponse> => {
+  
+  const res = await fetch(getTokenRefreshUrl(),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      tokenRefreshRequest,)
   }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: tokenRefreshResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as tokenRefreshResponse
+}
+
+
 
 /**
  * @summary Get all available roles
  */
-const getRoles = <TData = AxiosResponse<RolesResponse>>(
-     options?: AxiosRequestConfig
- ): Promise<TData> => {
-    return axios.get(
-      `/v1/roles`,options
-    );
-  }
+export type getRolesResponse200 = {
+  data: RolesResponse
+  status: 200
+}
 
-return {adminLogin,adminGetProfile,adminUserCreate,adminUserGetById,adminUserList,adminUserDisable,adminUserEnable,adminLogout,tokenRefresh,getRoles}};
-export type AdminLoginResult = AxiosResponse<AdminAuthResponse>
-export type AdminGetProfileResult = AxiosResponse<AdminUserProfile>
-export type AdminUserCreateResult = AxiosResponse<AdminUserResponse>
-export type AdminUserGetByIdResult = AxiosResponse<AdminUserResponse>
-export type AdminUserListResult = AxiosResponse<AdminUserListResponse>
-export type AdminUserDisableResult = AxiosResponse<void>
-export type AdminUserEnableResult = AxiosResponse<void>
-export type AdminLogoutResult = AxiosResponse<void>
-export type TokenRefreshResult = AxiosResponse<TokenRefreshResponse>
-export type GetRolesResult = AxiosResponse<RolesResponse>
+export type getRolesResponse401 = {
+  data: Problem
+  status: 401
+}
+
+export type getRolesResponse500 = {
+  data: Problem
+  status: 500
+}
+    
+export type getRolesResponseSuccess = (getRolesResponse200) & {
+  headers: Headers;
+};
+export type getRolesResponseError = (getRolesResponse401 | getRolesResponse500) & {
+  headers: Headers;
+};
+
+export type getRolesResponse = (getRolesResponseSuccess | getRolesResponseError)
+
+export const getGetRolesUrl = () => {
+
+
+  
+
+  return `/v1/roles`
+}
+
+export const getRoles = async ( options?: RequestInit): Promise<getRolesResponse> => {
+  
+  const res = await fetch(getGetRolesUrl(),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: getRolesResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as getRolesResponse
+}
+
+
+
