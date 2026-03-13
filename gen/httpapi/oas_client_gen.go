@@ -17,7 +17,7 @@ import (
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
 	"go.opentelemetry.io/otel/metric"
-	semconv "go.opentelemetry.io/otel/semconv/v1.37.0"
+	semconv "go.opentelemetry.io/otel/semconv/v1.39.0"
 	"go.opentelemetry.io/otel/trace"
 )
 
@@ -96,10 +96,6 @@ type Client struct {
 	sec       SecuritySource
 	baseClient
 }
-
-var _ Handler = struct {
-	*Client
-}{}
 
 // NewClient initializes new Client defined by OAS.
 func NewClient(serverURL string, sec SecuritySource, opts ...ClientOption) (*Client, error) {
@@ -230,7 +226,8 @@ func (c *Client) sendAdminGetProfile(ctx context.Context) (res AdminGetProfileRe
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeAdminGetProfileResponse(resp)
@@ -306,7 +303,8 @@ func (c *Client) sendAdminLogin(ctx context.Context, request *LoginRequest) (res
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeAdminLoginResponse(resp)
@@ -412,7 +410,8 @@ func (c *Client) sendAdminLogout(ctx context.Context) (res AdminLogoutRes, err e
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeAdminLogoutResponse(resp)
@@ -521,7 +520,8 @@ func (c *Client) sendAdminUserCreate(ctx context.Context, request *AdminUserCrea
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeAdminUserCreateResponse(resp)
@@ -645,7 +645,8 @@ func (c *Client) sendAdminUserDisable(ctx context.Context, params AdminUserDisab
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeAdminUserDisableResponse(resp)
@@ -769,7 +770,8 @@ func (c *Client) sendAdminUserEnable(ctx context.Context, params AdminUserEnable
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeAdminUserEnableResponse(resp)
@@ -893,7 +895,8 @@ func (c *Client) sendAdminUserGetById(ctx context.Context, params AdminUserGetBy
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeAdminUserGetByIdResponse(resp)
@@ -1085,7 +1088,8 @@ func (c *Client) sendAdminUserList(ctx context.Context, params AdminUserListPara
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeAdminUserListResponse(resp)
@@ -1191,7 +1195,8 @@ func (c *Client) sendGetRoles(ctx context.Context) (res GetRolesRes, err error) 
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeGetRolesResponse(resp)
@@ -1267,7 +1272,8 @@ func (c *Client) sendTokenRefresh(ctx context.Context, request *TokenRefreshRequ
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeTokenRefreshResponse(resp)

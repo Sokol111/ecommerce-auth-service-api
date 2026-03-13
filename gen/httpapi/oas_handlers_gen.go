@@ -15,7 +15,7 @@ import (
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
 	"go.opentelemetry.io/otel/metric"
-	semconv "go.opentelemetry.io/otel/semconv/v1.37.0"
+	semconv "go.opentelemetry.io/otel/semconv/v1.39.0"
 	"go.opentelemetry.io/otel/trace"
 )
 
@@ -46,6 +46,8 @@ func (s *Server) handleAdminGetProfileRequest(args [0]string, argsEscaped bool, 
 		semconv.HTTPRequestMethodKey.String("GET"),
 		semconv.HTTPRouteKey.String("/v1/admin/me"),
 	}
+	// Add attributes from config.
+	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
 
 	// Start a span for this request.
 	ctx, span := s.cfg.Tracer.Start(r.Context(), AdminGetProfileOperation,
@@ -216,6 +218,8 @@ func (s *Server) handleAdminLoginRequest(args [0]string, argsEscaped bool, w htt
 		semconv.HTTPRequestMethodKey.String("POST"),
 		semconv.HTTPRouteKey.String("/v1/admin/login"),
 	}
+	// Add attributes from config.
+	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
 
 	// Start a span for this request.
 	ctx, span := s.cfg.Tracer.Start(r.Context(), AdminLoginOperation,
@@ -357,6 +361,8 @@ func (s *Server) handleAdminLogoutRequest(args [0]string, argsEscaped bool, w ht
 		semconv.HTTPRequestMethodKey.String("POST"),
 		semconv.HTTPRouteKey.String("/v1/admin/logout"),
 	}
+	// Add attributes from config.
+	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
 
 	// Start a span for this request.
 	ctx, span := s.cfg.Tracer.Start(r.Context(), AdminLogoutOperation,
@@ -527,6 +533,8 @@ func (s *Server) handleAdminUserCreateRequest(args [0]string, argsEscaped bool, 
 		semconv.HTTPRequestMethodKey.String("POST"),
 		semconv.HTTPRouteKey.String("/v1/admin/users/create"),
 	}
+	// Add attributes from config.
+	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
 
 	// Start a span for this request.
 	ctx, span := s.cfg.Tracer.Start(r.Context(), AdminUserCreateOperation,
@@ -712,6 +720,8 @@ func (s *Server) handleAdminUserDisableRequest(args [1]string, argsEscaped bool,
 		semconv.HTTPRequestMethodKey.String("POST"),
 		semconv.HTTPRouteKey.String("/v1/admin/users/disable/{id}"),
 	}
+	// Add attributes from config.
+	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
 
 	// Start a span for this request.
 	ctx, span := s.cfg.Tracer.Start(r.Context(), AdminUserDisableOperation,
@@ -897,6 +907,8 @@ func (s *Server) handleAdminUserEnableRequest(args [1]string, argsEscaped bool, 
 		semconv.HTTPRequestMethodKey.String("POST"),
 		semconv.HTTPRouteKey.String("/v1/admin/users/enable/{id}"),
 	}
+	// Add attributes from config.
+	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
 
 	// Start a span for this request.
 	ctx, span := s.cfg.Tracer.Start(r.Context(), AdminUserEnableOperation,
@@ -1082,6 +1094,8 @@ func (s *Server) handleAdminUserGetByIdRequest(args [1]string, argsEscaped bool,
 		semconv.HTTPRequestMethodKey.String("GET"),
 		semconv.HTTPRouteKey.String("/v1/admin/users/get/{id}"),
 	}
+	// Add attributes from config.
+	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
 
 	// Start a span for this request.
 	ctx, span := s.cfg.Tracer.Start(r.Context(), AdminUserGetByIdOperation,
@@ -1267,6 +1281,8 @@ func (s *Server) handleAdminUserListRequest(args [0]string, argsEscaped bool, w 
 		semconv.HTTPRequestMethodKey.String("GET"),
 		semconv.HTTPRouteKey.String("/v1/admin/users/list"),
 	}
+	// Add attributes from config.
+	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
 
 	// Start a span for this request.
 	ctx, span := s.cfg.Tracer.Start(r.Context(), AdminUserListOperation,
@@ -1468,6 +1484,8 @@ func (s *Server) handleGetRolesRequest(args [0]string, argsEscaped bool, w http.
 		semconv.HTTPRequestMethodKey.String("GET"),
 		semconv.HTTPRouteKey.String("/v1/roles"),
 	}
+	// Add attributes from config.
+	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
 
 	// Start a span for this request.
 	ctx, span := s.cfg.Tracer.Start(r.Context(), GetRolesOperation,
@@ -1638,6 +1656,8 @@ func (s *Server) handleTokenRefreshRequest(args [0]string, argsEscaped bool, w h
 		semconv.HTTPRequestMethodKey.String("POST"),
 		semconv.HTTPRouteKey.String("/v1/token/refresh"),
 	}
+	// Add attributes from config.
+	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
 
 	// Start a span for this request.
 	ctx, span := s.cfg.Tracer.Start(r.Context(), TokenRefreshOperation,
