@@ -6,7 +6,7 @@
 Supports admin panel users with RBAC.
 Uses PASETO tokens for secure authentication.
 
- * OpenAPI spec version: 1.1.4
+ * OpenAPI spec version: 1.1.5
  */
 import type {
   AdminAuthResponse,
